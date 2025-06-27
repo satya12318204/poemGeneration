@@ -1,0 +1,18 @@
+{
+  "bos_token": {
+    "content": "<|startofpoem|>",
+    "lstrip": false,
+    "normalized": false,
+    "rstrip": false,
+    "single_word": false
+  },
+  "eos_token": {
+    "content": "<|endofpoem|>",
+    "lstrip": false,
+    "normalized": false,
+    "rstrip": false,
+    "single_word": false
+  },
+  "pad_token": "<|pad|>",
+  "unk_token": "<|endoftext|>"
+}
