@@ -1,20 +1,27 @@
-# First: install necessary packages if not already installed
 import subprocess
 import sys
+import os
 
-required_packages = ["streamlit", "transformers", "torch"]
+# Step 1: Write requirements.txt content
+requirements_content = """
+streamlit>=1.25.0
+transformers>=4.30.0
+torch>=2.0.0
+datasets>=2.14.0
+pandas>=1.3.0
+"""
 
-for package in required_packages:
-    try:
-        __import__(package)
-    except ImportError:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+with open("requirements.txt", "w") as f:
+    f.write(requirements_content.strip())
 
-# Now import and run the app
+# Step 2: Install the packages from requirements.txt
+subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+
+# Step 3: Import libraries after installing
 import streamlit as st
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
-# Load model and tokenizer
+# Step 4: Load model and tokenizer
 @st.cache_resource
 def load_model_and_tokenizer(model_path="./fine_tuned_poetry_model_v3"):
     tokenizer = GPT2Tokenizer.from_pretrained(model_path)
@@ -33,7 +40,7 @@ def load_model_and_tokenizer(model_path="./fine_tuned_poetry_model_v3"):
 
 model, tokenizer = load_model_and_tokenizer()
 
-# App UI
+# Step 5: Streamlit UI
 st.title("Poem's Generator")
 st.markdown("Interact with your fine-tuned GPT-2 poetry model.")
 
@@ -74,7 +81,6 @@ if st.button("💬 Generate Poem"):
     st.subheader("poem generator")
     for i, output in enumerate(outputs):
         decoded_poem = tokenizer.decode(output, skip_special_tokens=True).strip()
-        # Format like chat
         with st.chat_message("assistant"):
             st.markdown(f"**Poem {i+1}:**")
             st.markdown(decoded_poem)
