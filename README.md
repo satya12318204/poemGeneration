@@ -1,46 +1,80 @@
-GPT-2 Fine-Tuning Documentation for Poetry Generation
-This document provides a complete explanation of the GPT-2 fine-tuning process for poetry generation. It walks through the full pipeline from data preprocessing to training and saving the model, and includes explanations for all major parameters and configurations used during the training process. This guide is intended for future reference and reproducibility.
-Step 1: Environment Preparation and Imports
-To ensure smooth training, especially on machines with GPUs, we enable a setting that allows CUDA memory to be allocated flexibly. We also import required libraries: Hugging Face Transformers for model training, Datasets for handling data, Torch for the deep learning backend, and Pandas for reading the CSV data.
-Step 2: Load and Extend the GPT-2 Model
-We load a pre-trained GPT-2 model using the Hugging Face library. Since GPT-2 is not trained on poem-specific tokens, we manually add special tokens like <|startofpoem|>, <|endofpoem|>, and <|pad|>. This helps the model recognize the structure of poems and handle padding correctly.
-Step 3: Dataset Preparation and Formatting
-We use a CSV file containing poems along with their metadata such as title, poet name, and tags. Short poems (less than 50 characters) are removed to avoid noise. Missing values are replaced with empty strings to maintain format consistency.
-Each row in the dataset is then formatted into a structured string using special tokens. Here's an example of a single preprocessed entry:
-<|startofpoem|>
-Title: A Summer Day
-Poet: John Doe
-Tags: Nature, Sunshine
+# GPT-2 Fine-Tuned Poetry Generator
 
-The sun shines bright on a field of gold,
-With stories that the breeze has told,
-Each petal bends in morning grace,
-Touched gently by the sky's embrace.
-<|endofpoem|>
-Step 4: Tokenization
-Each formatted poem is converted into tokens using the GPT-2 tokenizer. These tokens are numerical representations of words or symbols. All input sequences are either padded or truncated to a maximum length of 768 tokens, which balances training time and memory usage.
-Step 5: Train-Validation Split
-The full dataset is split into two parts: 80% for training and 20% for validation. This allows the model to learn from the majority of data while being evaluated on unseen data to check for overfitting or underfitting.
-Step 6: Data Collator
-We use a data collator that dynamically pads input sequences and sets up data for causal language modeling. Unlike masked language models (MLM), GPT-2 is trained to predict the next token, not random masked tokens.
-Step 7: Training Configuration
-Below are the training arguments used and why they were chosen:
-• output_dir: Directory to save model checkpoints and logs.
-• overwrite_output_dir: Ensures the training can overwrite previous runs.
-• num_train_epochs: Set to 10 so the model gets multiple passes over data for improved learning.
-• per_device_train_batch_size: Batch size of 4 per GPU. Adjusted for memory limits.
-• gradient_accumulation_steps: Set to 2 to simulate a batch size of 8, helping with stability and memory use.
-• save_steps: Save model every 1000 steps to avoid losing progress.
-• save_total_limit: Limit to 2 recent checkpoints to save disk space.
-• logging_dir: Directory to save training logs.
-• logging_steps: Logs written every 100 steps for visibility into training.
-• fp16: Enables mixed precision training if supported by GPU (improves speed and reduces memory).
-• warmup_steps: Uses 200 steps to gradually increase the learning rate, preventing unstable jumps early in training.
-• weight_decay: Applies slight regularization to avoid overfitting.
-• learning_rate: Set to 3e-5, which is a moderate and stable rate for fine-tuning pretrained models.
-Step 8: Model Training
-We use Hugging Face’s Trainer class to perform training. It handles batching, evaluation, checkpointing, and logging. The training process involves feeding tokenized sequences into the model, calculating loss, and adjusting weights using backpropagation.
-Step 9: Saving the Trained Model
-Once the training is complete, the final model and tokenizer are saved in a directory. These can later be reloaded for text generation or further fine-tuning without repeating the training process from scratch.
- Conclusion
-This document serves as a complete guide for setting up, training, and saving a fine-tuned GPT-2 model for poem generation. It includes detailed explanations for each step and parameter to ensure reproducibility and clarity for future work.
+This project fine-tunes a pre-trained GPT-2 model using a custom poetry dataset to generate high-quality poems. The model is trained to understand structure, theme, and poetic flow through domain-specific tokens and carefully prepared data.
+
+## 📖 Overview
+
+This repository includes:
+
+* A fine-tuning pipeline for GPT-2 using the Hugging Face Transformers library.
+* A Streamlit-based app for generating poems interactively.
+* Detailed documentation for reproducibility and understanding.
+
+## 🔧 Environment Setup
+
+Make sure you have Python 3.7+ installed. All dependencies are listed in `requirements.txt`. To install them:
+
+```bash
+pip install -r requirements.txt
+```
+
+## 🚀 Features
+
+* Custom dataset preprocessing and tokenization
+* GPT-2 model fine-tuning using Hugging Face Trainer
+* Inference pipeline with top-k, top-p sampling
+* Web app interface for poem generation via Streamlit
+* Support for saving and loading trained models
+
+## 🔹 Fine-Tuning Pipeline
+
+1. **Prepare Dataset**: Place your poetry dataset in `.txt` format inside the `data/` folder.
+2. **Tokenization**: Run `tokenize.py` to tokenize the dataset using GPT-2 tokenizer.
+3. **Training**: Use `train.py` to fine-tune the model. Customize hyperparameters as needed.
+4. **Saving**: Trained model and tokenizer are saved to `models/`.
+
+## 🎨 Streamlit App
+
+Launch the poem generator web interface using:
+
+```bash
+streamlit run app.py
+```
+
+Select generation parameters like temperature, top-k, and max length to control the creativity of the output.
+
+## 📁 Project Structure
+
+```
+.
+├── data/                # Raw poetry text files
+├── models/              # Saved models and tokenizer
+├── app.py               # Streamlit interface
+├── train.py             # Fine-tuning script
+├── tokenize.py          # Dataset preprocessing
+├── utils.py             # Helper functions
+├── requirements.txt     # Python dependencies
+└── README.md            # Project overview
+```
+
+## ⚙️ Example Usage
+
+Example command to fine-tune GPT-2:
+
+```bash
+python train.py --model_name gpt2 --train_file data/poems.txt --output_dir models/ --epochs 4 --batch_size 2
+```
+
+## 💡 Tips for Better Results
+
+* Start with a small dataset and increase size gradually.
+* Experiment with training epochs and learning rate.
+* Use temperature and top-p settings to adjust randomness in output.
+
+## 📄 License
+
+MIT License.
+
+---
+
+Happy fine-tuning and enjoy generating beautiful poetry! 🌟
