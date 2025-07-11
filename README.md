@@ -28,10 +28,10 @@ pip install -r requirements.txt
 
 ## 🔹 Fine-Tuning Pipeline
 
-1. **Prepare Dataset**: Place your poetry dataset in `.txt` format inside the `data/` folder.
-2. **Tokenization**: Run `tokenize.py` to tokenize the dataset using GPT-2 tokenizer.
-3. **Training**: Use `train.py` to fine-tune the model. Customize hyperparameters as needed.
-4. **Saving**: Trained model and tokenizer are saved to `models/`.
+1. **Prepare Dataset**: Place your poetry dataset in `.txt` or `.csv` format.
+2. **Tokenization**: Tokenization is handled within the training pipeline or pre-processing notebook.
+3. **Training**: Use a notebook (`generator.ipynb`) or scripts to fine-tune the model.
+4. **Saving**: Trained model and tokenizer are saved under `fine_tuned_poetry_model_v3/`.
 
 ## 🎨 Streamlit App
 
@@ -45,21 +45,22 @@ Select generation parameters like temperature, top-k, and max length to control 
 
 ## 📁 Project Structure
 
-```
+```plaintext
 .
-├── data/                # Raw poetry text files
-├── models/              # Saved models and tokenizer
-├── app.py               # Streamlit interface
-├── train.py             # Fine-tuning script
-├── tokenize.py          # Dataset preprocessing
-├── utils.py             # Helper functions
-├── requirements.txt     # Python dependencies
-└── README.md            # Project overview
+├── .gitattributes
+├── LICENSE
+├── GPT2_Poetry_Documentation.docx       # Full documentation of model, training, and usage
+├── PoetryFoundationData.csv             # Source poetry dataset
+├── README.md                            # Project overview
+├── app.py                               # Streamlit web UI for poem generation
+├── generator.ipynb                      # Notebook for model training and generation
+├── requirements.txt                     # Python dependencies
+└── fine_tuned_poetry_model_v3/          # Directory storing the fine-tuned GPT-2 model
 ```
 
 ## ⚙️ Example Usage
 
-Example command to fine-tune GPT-2:
+Example command to fine-tune GPT-2 (if applicable):
 
 ```bash
 python train.py --model_name gpt2 --train_file data/poems.txt --output_dir models/ --epochs 4 --batch_size 2
