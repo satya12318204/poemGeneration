@@ -66,12 +66,6 @@ Example command to fine-tune GPT-2 (if applicable):
 python train.py --model_name gpt2 --train_file data/poems.txt --output_dir models/ --epochs 4 --batch_size 2
 ```
 
-## 💡 Tips for Better Results
-
-* Start with a small dataset and increase size gradually.
-* Experiment with training epochs and learning rate.
-* Use temperature and top-p settings to adjust randomness in output.
-
 ## 📄 License
 
 MIT License.
